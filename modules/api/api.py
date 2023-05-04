@@ -15,7 +15,7 @@ from fastapi.encoders import jsonable_encoder
 from secrets import compare_digest
 
 import modules.shared as shared
-from modules import sd_samplers, deepbooru, sd_hijack, images, scripts, ui, postprocessing
+from modules import sd_samplers, deepbooru, sd_hijack, images, scripts, ui, postprocessing, sd_models
 from modules.api.models import *
 from modules.poph2.ProcessImages import tag_and_upload_images
 from modules.processing import StableDiffusionProcessingTxt2Img, StableDiffusionProcessingImg2Img, process_images
@@ -23,7 +23,7 @@ from modules.textual_inversion.textual_inversion import create_embedding, train_
 from modules.textual_inversion.preprocess import preprocess
 from modules.hypernetworks.hypernetwork import create_hypernetwork, train_hypernetwork
 from PIL import PngImagePlugin,Image
-from modules.sd_models import checkpoints_list, unload_model_weights, reload_model_weights
+from modules.sd_models import checkpoints_list, unload_model_weights, reload_model_weights, checkpoint_alisases
 from modules.sd_models_config import find_checkpoint_config_near_filename
 from modules.realesrgan_model import get_realesrgan_models
 from modules import devices
@@ -325,6 +325,11 @@ class Api:
         return TextToImageResponseV2(request_id=txt2imgreq.request_id, images=b64images, images_paths=images_paths, parameters=vars(txt2imgreq), info=processed.js())
 
     def text2imgapi_v2(self, text2imgreq: StableDiffusionTxt2ImgProcessingAPI):
+
+        chkpnt_aliases = checkpoint_alisases
+        chkpnt = chkpnt_aliases.get('huggingface\\v1-5-pruned-emaonly.safetensors', None)
+
+        sd_models.load_model(chkpnt)
 
         response = self.text2imgapi(text2imgreq)
 
