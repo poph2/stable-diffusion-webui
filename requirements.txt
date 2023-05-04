@@ -35,3 +35,5 @@ torchsde
 safetensors
 psutil
 rich
+
+-e git+https://github.com/pop-h2/h2-utils-py.git@main#egg=utils-py

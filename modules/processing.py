@@ -774,8 +774,9 @@ def old_hires_fix_first_pass_dimensions(width, height):
 class StableDiffusionProcessingTxt2Img(StableDiffusionProcessing):
     sampler = None
 
-    def __init__(self, enable_hr: bool = False, denoising_strength: float = 0.75, firstphase_width: int = 0, firstphase_height: int = 0, hr_scale: float = 2.0, hr_upscaler: str = None, hr_second_pass_steps: int = 0, hr_resize_x: int = 0, hr_resize_y: int = 0, **kwargs):
+    def __init__(self, request_id: str, enable_hr: bool = False, denoising_strength: float = 0.75, firstphase_width: int = 0, firstphase_height: int = 0, hr_scale: float = 2.0, hr_upscaler: str = None, hr_second_pass_steps: int = 0, hr_resize_x: int = 0, hr_resize_y: int = 0, **kwargs):
         super().__init__(**kwargs)
+        self.request_id = request_id
         self.enable_hr = enable_hr
         self.denoising_strength = denoising_strength
         self.hr_scale = hr_scale
@@ -941,16 +942,6 @@ class StableDiffusionProcessingTxt2Img(StableDiffusionProcessing):
         samples = self.sampler.sample_img2img(self, samples, noise, conditioning, unconditional_conditioning, steps=self.hr_second_pass_steps or self.steps, image_conditioning=image_conditioning)
 
         return samples
-
-
-class StableDiffusionProcessingTxt2ImgV2(StableDiffusionProcessingTxt2Img):
-
-    def __init__(self, requestId, enable_hr: bool = False, denoising_strength: float = 0.75, firstphase_width: int = 0,
-                 firstphase_height: int = 0, hr_scale: float = 2.0, hr_upscaler: str = None,
-                 hr_second_pass_steps: int = 0, hr_resize_x: int = 0, hr_resize_y: int = 0, **kwargs):
-        super().__init__(enable_hr, denoising_strength, firstphase_width, firstphase_height, hr_scale, hr_upscaler,
-                         hr_second_pass_steps, hr_resize_x, hr_resize_y, **kwargs)
-        self.requestId = requestId
 
 class StableDiffusionProcessingImg2Img(StableDiffusionProcessing):
     sampler = None

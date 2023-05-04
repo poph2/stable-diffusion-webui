@@ -132,6 +132,7 @@ class TextToImageResponse(BaseModel):
     parameters: dict
     info: str
 class TextToImageResponseV2(TextToImageResponse):
+    request_id: str
     images_paths: List[str] = Field(default=None, title="ImagePath", description="Path to the saved image")
 
 class ImageToImageResponse(BaseModel):
