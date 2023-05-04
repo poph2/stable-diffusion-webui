@@ -131,6 +131,8 @@ class TextToImageResponse(BaseModel):
     images: List[str] = Field(default=None, title="Image", description="The generated image in base64 format.")
     parameters: dict
     info: str
+class TextToImageResponseV2(TextToImageResponse):
+    images_paths: List[str] = Field(default=None, title="ImagePath", description="Path to the saved image")
 
 class ImageToImageResponse(BaseModel):
     images: List[str] = Field(default=None, title="Image", description="The generated image in base64 format.")
