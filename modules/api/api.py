@@ -22,7 +22,7 @@ from modules.textual_inversion.textual_inversion import create_embedding, train_
 from modules.textual_inversion.preprocess import preprocess
 from modules.hypernetworks.hypernetwork import create_hypernetwork, train_hypernetwork
 from PIL import PngImagePlugin,Image
-from modules.sd_models import checkpoints_list, unload_model_weights, reload_model_weights, checkpoint_alisases
+from modules.sd_models import checkpoints_list, unload_model_weights, reload_model_weights
 from modules.sd_models_config import find_checkpoint_config_near_filename
 from modules.realesrgan_model import get_realesrgan_models
 from modules import devices
@@ -167,7 +167,7 @@ class Api:
         self.app = app
         self.queue_lock = queue_lock
         api_middleware(self.app)
-        self.add_api_route("/sdapi/v1/txt2img", self.text2imgapi, methods=["POST"], response_model=TextToImageResponseV2)
+        self.add_api_route("/sdapi/v1/txt2img", self.text2imgapi, methods=["POST"], response_model=TextToImageResponse)
         self.add_api_route("/sdapi/v1/img2img", self.img2imgapi, methods=["POST"], response_model=ImageToImageResponse)
         self.add_api_route("/sdapi/v1/extra-single-image", self.extras_single_image_api, methods=["POST"], response_model=ExtrasSingleImageResponse)
         self.add_api_route("/sdapi/v1/extra-batch-images", self.extras_batch_images_api, methods=["POST"], response_model=ExtrasBatchImagesResponse)
@@ -320,6 +320,7 @@ class Api:
         b64images = list(map(encode_pil_to_base64, processed.images)) if send_images else []
 
         return TextToImageResponse(images=b64images, parameters=vars(txt2imgreq), info=processed.js())
+
     def img2imgapi(self, img2imgreq: StableDiffusionImg2ImgProcessingAPI):
         init_images = img2imgreq.init_images
         if init_images is None:
