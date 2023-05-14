@@ -353,7 +353,7 @@ def start():
 
 if __name__ == "__main__":
     sys.argv.append("--api")
-    sys.argv.append("--listen")
+    # sys.argv.append("--listen")
     sys.argv.append("--disable-safe-unpickle")
     prepare_environment()
     start()
