@@ -942,6 +942,7 @@ class StableDiffusionProcessingTxt2Img(StableDiffusionProcessing):
 
         return samples
 
+
 class StableDiffusionProcessingImg2Img(StableDiffusionProcessing):
     sampler = None
 
