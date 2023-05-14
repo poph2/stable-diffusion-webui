@@ -169,7 +169,6 @@ class Api:
         self.queue_lock = queue_lock
         api_middleware(self.app)
         self.add_api_route("/sdapi/v1/txt2img", self.text2imgapi, methods=["POST"], response_model=TextToImageResponseV2)
-        self.add_api_route("/sdapi/v2/txt2img", self.text2imgapi_v2, methods=["POST"], response_model=TextToImageResponseV2)
         self.add_api_route("/sdapi/v1/img2img", self.img2imgapi, methods=["POST"], response_model=ImageToImageResponse)
         self.add_api_route("/sdapi/v1/extra-single-image", self.extras_single_image_api, methods=["POST"], response_model=ExtrasSingleImageResponse)
         self.add_api_route("/sdapi/v1/extra-batch-images", self.extras_batch_images_api, methods=["POST"], response_model=ExtrasBatchImagesResponse)
@@ -322,22 +321,8 @@ class Api:
         b64images = list(map(encode_pil_to_base64, processed.images)) if send_images else []
         images_paths = [img.already_saved_as for img in processed.images]
 
-        return TextToImageResponseV2(request_id=txt2imgreq.request_id, images=b64images, images_paths=images_paths, parameters=vars(txt2imgreq), info=processed.js())
-
-    def text2imgapi_v2(self, text2imgreq: StableDiffusionTxt2ImgProcessingAPI):
-
-        chkpnt_aliases = checkpoint_alisases
-        chkpnt = chkpnt_aliases.get('huggingface\\v1-5-pruned-emaonly.safetensors', None)
-
-        sd_models.load_model(chkpnt)
-
-        response = self.text2imgapi(text2imgreq)
-
-        tag_and_upload_images(response)
-
-        return response
-
-
+        return TextToImageResponse(images=b64images, parameters=vars(txt2imgreq), info=processed.js())
+    
     def img2imgapi(self, img2imgreq: StableDiffusionImg2ImgProcessingAPI):
         init_images = img2imgreq.init_images
         if init_images is None:
