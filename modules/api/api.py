@@ -15,9 +15,8 @@ from fastapi.encoders import jsonable_encoder
 from secrets import compare_digest
 
 import modules.shared as shared
-from modules import sd_samplers, deepbooru, sd_hijack, images, scripts, ui, postprocessing, sd_models
+from modules import sd_samplers, deepbooru, sd_hijack, images, scripts, ui, postprocessing
 from modules.api.models import *
-from modules.poph2.ProcessImages import tag_and_upload_images
 from modules.processing import StableDiffusionProcessingTxt2Img, StableDiffusionProcessingImg2Img, process_images
 from modules.textual_inversion.textual_inversion import create_embedding, train_embedding
 from modules.textual_inversion.preprocess import preprocess
@@ -319,10 +318,8 @@ class Api:
             shared.state.end()
 
         b64images = list(map(encode_pil_to_base64, processed.images)) if send_images else []
-        images_paths = [img.already_saved_as for img in processed.images]
 
         return TextToImageResponse(images=b64images, parameters=vars(txt2imgreq), info=processed.js())
-    
     def img2imgapi(self, img2imgreq: StableDiffusionImg2ImgProcessingAPI):
         init_images = img2imgreq.init_images
         if init_images is None:
